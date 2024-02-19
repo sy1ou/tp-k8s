@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: motd-deployment
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: motd
+  template:
+    metadata:
+      labels:
+        app: motd
+    spec:
+      containers:
+      - name: motd-container
+        image: nginx
+        env:
+          - name: APP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: motd-configmap
+                key: listen_port
+          - name: MESSAGE
+            valueFrom:
+              configMapKeyRef:
+                name: motd-configmap
+                key: message_content
+        volumeMounts:
+        - name: motd-config
+          mountPath: /etc/nginx/templates/default.conf.template
+          subPath: default.conf.template
+      volumes:
+      - name: motd-config
+        configMap:
+          name: motd-configmap

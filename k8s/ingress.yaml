@@ -1,0 +1,17 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: motd-ingress
+spec:
+  rules:
+  - host: louis-poidevin.amnay.fr
+    http:
+      paths:
+      - path: /motd
+        pathType: Prefix
+        backend:
+          service:
+            name: motd-svc
+            port:
+              number: 80
